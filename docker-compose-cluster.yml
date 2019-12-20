@@ -1,0 +1,99 @@
+#
+#
+version: '3.3'
+
+services:
+  # **************************
+  # SERVER
+  # **************************
+  consul-agent-0:
+    image: consul:latest
+    container_name: "consul-agent-0"
+    hostname: "consul-agent-0"
+    environment:
+      - "CONSUL_LOCAL_CONFIG={\"disable_update_check\": true}"
+      - "CONSUL_BIND_INTERFACE=eth0"
+    networks:
+      - "consul"
+    ports:
+      - "8301:8301"
+      - "8400:8400"
+      - "8500:8500"
+      - "8600:8600"
+      - "8600:8600/udp"
+    volumes:
+      - 'consul-agent-0-data:/consul/data'
+    command: "agent -server -bootstrap -ui -client=0.0.0.0 -bind='{{ GetInterfaceIP \"eth0\" }}'"
+
+  # **************************
+  # AGENT-1
+  # **************************
+  consul-agent-1:
+    image: consul:latest
+    container_name: "consul-agent-1"
+    hostname: "consul-agent-1"
+    networks:
+      - "consul"
+    ports:
+      - "8400"
+      - "8500"
+      - "8600"
+      - "8600:8600/udp"
+    volumes:
+      - 'consul-agent1-data:/consul/data'
+    depends_on:
+      - "consul-agent-0"
+    command: "agent -server -retry-join consul-agent-0"
+
+  # **************************
+  # AGENT-2
+  # **************************
+  consul-agent-2:
+    image: consul:latest
+    container_name: "consul-agent-2"
+    hostname: "consul-agent-2"
+    networks:
+      - "consul"
+    ports:
+      - "8400"
+      - "8500"
+      - "8600"
+      - "8600:8600/udp"
+    volumes:
+      - 'consul-agent1-data:/consul/data'
+    depends_on:
+      - "consul-agent-0"
+    command: "agent -server -retry-join consul-agent-0"
+
+  # **************************
+  # AGENT-3
+  # **************************
+  consul-agent-3:
+    image: consul:latest
+    container_name: "consul-agent-3"
+    hostname: "consul-agent-3"
+    networks:
+      - "consul"
+    ports:
+      - "8400"
+      - "8500"
+      - "8600"
+      - "8600:8600/udp"
+    volumes:
+      - 'consul-agent3-data:/consul/data'
+    depends_on:
+      - "consul-agent-0"
+    command: "agent -retry-join consul-agent-0"
+
+networks:
+  consul:
+
+volumes:
+  consul-agent-0-data:
+    driver: local
+  consul-agent1-data:
+    driver: local
+  consul-agent2-data:
+    driver: local
+  consul-agent3-data:
+    driver: local

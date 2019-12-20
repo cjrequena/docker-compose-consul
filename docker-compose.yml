@@ -1,0 +1,33 @@
+#
+#
+version: '3.3'
+
+services:
+  # **************************
+  # SERVER
+  # **************************
+  consul-server:
+    image: consul:latest
+    container_name: "consul-server"
+    hostname: "consul-server"
+    environment:
+      - "CONSUL_LOCAL_CONFIG={\"disable_update_check\": true}"
+      - "CONSUL_BIND_INTERFACE=eth0"
+    networks:
+      - "consul"
+    ports:
+      - "8301:8301"
+      - "8400:8400"
+      - "8500:8500"
+      - "8600:8600"
+      - "8600:8600/udp"
+    volumes:
+      - 'consul-server-data:/consul/data'
+    command: "agent -server -ui -client=0.0.0.0 -bind='{{ GetInterfaceIP \"eth0\" }}'"
+
+networks:
+  consul:
+
+volumes:
+  consul-server-data:
+    driver: local
