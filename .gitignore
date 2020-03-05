@@ -4,6 +4,10 @@
 bin/
 gen/
 target/
+consul-agent0-data/*
+consul-agent1-data/*
+consul-agent2-data/*
+consul-agent3-data/*
 
 ###############
 # Java class files

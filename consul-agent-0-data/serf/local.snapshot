@@ -1,8 +1,0 @@
-alive: consul-agent-0 172.18.0.2:8301
-event-clock: 1
-alive: consul-agent-0 172.18.0.2:8301
-alive: consul-agent-1 172.18.0.3:8301
-alive: consul-agent-3 172.18.0.5:8301
-clock: 1
-clock: 2
-event-clock: 2
